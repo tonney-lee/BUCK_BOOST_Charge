@@ -1,5 +1,9 @@
 {
     "files.associations": {
-        "FT32F072X8_eval.C": "cpp"
+        "FT32F072X8_eval.C": "cpp",
+        "my_io_port.h": "c",
+        "main.h": "c",
+        "thread.h": "c",
+        "usr.h": "c"
     }
 }

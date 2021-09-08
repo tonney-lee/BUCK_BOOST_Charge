@@ -20,7 +20,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "thread.h"
+#include "usr.h"
 /** @addtogroup FT32f0xx_StdPeriph_Examples
   * @{
   */
@@ -57,70 +58,17 @@ int main(void)
        system_FT32f0xx.c file
      */
 
-    /* Configures the TAMPER button */
-    FT_EVAL_PBInit(BUTTON_TAMPER, BUTTON_MODE_EXTI);
-
-    /* Configure LEDs */
-    FT_EVAL_LEDInit(LED1);
-    FT_EVAL_LEDInit(LED2);
-    FT_EVAL_LEDInit(LED4);
-
-    GPIO_InitTypeDef GPIO_InitStructure;
-    FT_EVAL_LEDInit(LED3);
-    /* GPIOC Periph clock enable */
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-
-    /*Configure PA8 as MCO, you can test the sysyclk out*/
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    //
-    GPIO_PinAFConfig(GPIOA, GPIO_PinSource8, GPIO_AF_0);
-    //
-    RCC_MCOConfig(RCC_MCOSource_SYSCLK, RCC_MCOPrescaler_8); // now PA8 output the freq of sysclk/8
-
     /* SysTick interrupt each 10 ms */
-    if(SysTick_Config(SystemCoreClock / 100))
+    if(SysTick_Config(SystemCoreClock / 1000))
     {
         /* Capture error */
         while(1)
             ;
     }
-
-    /* RTC Configuration */
-    RTC_Config();
-
-    /* LED1 On */
-    FT_EVAL_LEDOn(LED1);
-
+    Thread_Start(user, &threadInfo.status);
+    TaskRun();
     while(1)
     {
-        /* Insert 5 second delay */
-        Delay(500);
-
-        /* Set alarm in 5s */
-        RTC_AlarmConfig();
-
-        /* LEDs Off */
-        FT_EVAL_LEDOff(LED1);
-        FT_EVAL_LEDOff(LED2);
-        FT_EVAL_LEDOff(LED4);
-
-        /* Request to enter STOP mode with regulator in low power mode */
-        PWR_EnterSTOPMode(PWR_Regulator_LowPower, PWR_STOPEntry_WFI);
-
-        /* LED1 On */
-        FT_EVAL_LEDOn(LED1);
-
-        /* Disable the RTC Alarm interrupt */
-        RTC_ITConfig(RTC_IT_ALRA, DISABLE);
-        RTC_AlarmCmd(RTC_Alarm_A, DISABLE);
-
-        /* Configures system clock after wake-up from STOP */
-        SYSCLKConfig_STOP();
     }
 }
 

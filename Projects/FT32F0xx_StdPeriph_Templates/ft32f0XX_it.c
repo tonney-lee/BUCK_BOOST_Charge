@@ -83,17 +83,7 @@ void PendSV_Handler(void)
 {
 }
 
-/**
-  * @brief  This function handles SysTick Handler.
-  * @param  None
-  * @retval None
-  */
-void SysTick_Handler(void)
-{
- 
-  TimingDelay--;
-  FT_EVAL_LEDToggle(LED3);
-}
+
 
 /******************************************************************************/
 /*                 FT32f0xx Peripherals Interrupt Handlers                   */
