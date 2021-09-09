@@ -5,6 +5,7 @@
 #define PWM_MAX (0x00)
 
 void Time1Initial(void);
-void Time4Initial(void);
+void Time3Initial(void);
+void Time15Initial(void);
 
 #endif

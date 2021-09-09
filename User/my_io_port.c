@@ -56,18 +56,22 @@ static void Init_GPIO(void)
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     //FIR_PWM PA2
-    GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_0); //TIM15_CH1的复用
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_0); //TIM15_CH1的复用
 
     //BLED_B  PB0
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource0, GPIO_AF_1); //TIM3_CH3的复用
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource0, GPIO_AF_1); //TIM3_CH3的复用
 
     //TEC_PWR PB2
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
@@ -78,11 +82,13 @@ static void Init_GPIO(void)
     GPIO_ResetBits(GPIOB, GPIO_Pin_2);
 
     //PWM_C PA11
-    GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_2); //TIM1_CH4的复用
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_2); //TIM1_CH4的复用
 
     //LED2 PA12
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
@@ -125,18 +131,22 @@ static void Init_GPIO(void)
     GPIO_ResetBits(GPIOB, GPIO_Pin_3);
 
     //RLED_B PB4
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_1); //TIM3_CH1的复用
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_1); //TIM3_CH1的复用
 
     //GLED_B PB5
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_1); //TIM3_CH2的复用
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_1); //TIM3_CH2的复用
 
     //MCU_RXD PB7
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
@@ -178,6 +188,7 @@ static void Init_GPIO(void)
     GPIO_ResetBits(GPIOB, GPIO_Pin_9);
 
     //模拟口
+    /* Configure ADC Channel11 as analog input */
     //BAT_NTC PA1
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -248,25 +259,31 @@ static void Init_GPIO(void)
     GPIO_Init(GPIOB, &GPIO_InitStructure);
     //电机部分IO口 桥
     //PWM_UH PA8
-    GPIO_PinAFConfig(GPIOA, GPIO_PinSource8, GPIO_AF_2); //TIM1_CH3的复用
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource8, GPIO_AF_2); //TIM1_CH1的复用
 
     //PWM_VH PA9
-    GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_2); //TIM1_CH2的复用
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_2); //TIM1_CH2的复用
 
     //PWM_WH PA10
-    GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_2); //TIM1_CH1的复用
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
+    GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_2); //TIM1_CH3的复用
 
     //PWM_UL PB13
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
@@ -358,7 +375,7 @@ async IO_Test(thread_t* pt)
             SCL_IO(n);
             SDA_IO(n);
             IO_TX(n);
-            
+
             Thread_Sleep(100);
         }
     }
