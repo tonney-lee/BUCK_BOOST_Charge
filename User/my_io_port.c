@@ -15,7 +15,7 @@ static void Init_GPIO(void)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
 
     //PWR_IO PC14
@@ -148,28 +148,23 @@ static void Init_GPIO(void)
     GPIO_Init(GPIOB, &GPIO_InitStructure);
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_1); //TIM3_CH2µÄ¸´ÓÃ
 
+    //UART
     //MCU_RXD PB7
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_ResetBits(GPIOB, GPIO_Pin_7);
-
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_0);
     //MCU_TXD PB6
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-    //MCU_RXD PB7
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_ResetBits(GPIOB, GPIO_Pin_7);
+    GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_0);
+    GPIO_SetBits(GPIOB, GPIO_Pin_6);
 
     //UnderSnr_SCL PB8
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
@@ -243,14 +238,14 @@ static void Init_GPIO(void)
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
-
     //HALL_B PB10
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
-
     //HALL_C PB11
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -330,12 +325,118 @@ void PowerStop_Init(void)
 }
 
 /**
+ * @description: MFB PORT INIT
+ * @param {*}
+ * @return {*}
+ */
+
+void EXTI0_1_Config(void)
+{
+    NVIC_InitTypeDef NVIC_InitStructure;
+    EXTI_InitTypeDef EXTI_InitStructure;
+
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0); //PA0
+
+    EXTI_InitStructure.EXTI_Line = EXTI_Line0;
+    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+    EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+    EXTI_Init(&EXTI_InitStructure);
+
+    NVIC_InitStructure.NVIC_IRQChannel = EXTI0_1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPriority = 0x01;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+}
+
+/**
+ * @description: HALL IO PORT INIT
+ * @param {*}
+ * @return {*}
+ */
+
+void EXTI4_15_Config(void)
+{
+    NVIC_InitTypeDef NVIC_InitStructure;
+    EXTI_InitTypeDef EXTI_InitStructure;
+    /* Enable SYSCFG clock */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource12); //PB12 HA
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource10); //PB10 HB
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOB, EXTI_PinSource11); //PB11 HC
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOC, EXTI_PinSource13); //PC13 DC IN
+
+    EXTI_InitStructure.EXTI_Line = EXTI_Line12;
+    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+    EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+    EXTI_Init(&EXTI_InitStructure);
+
+    EXTI_InitStructure.EXTI_Line = EXTI_Line10;
+    EXTI_Init(&EXTI_InitStructure);
+
+    EXTI_InitStructure.EXTI_Line = EXTI_Line11;
+    EXTI_Init(&EXTI_InitStructure);
+
+    EXTI_InitStructure.EXTI_Line = EXTI_Line13;
+    EXTI_Init(&EXTI_InitStructure);
+
+    /* Enable and set EXTI4_15 Interrupt */
+    NVIC_InitStructure.NVIC_IRQChannel = EXTI4_15_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPriority = 0x00;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+}
+/**
  * @description: 
  * @param {*}
  * @return {*}
  */
 void IO_Int_Init(void)
 {
+    EXTI0_1_Config();
+    EXTI4_15_Config();
+}
+
+void EXTI4_15_IRQHandler(void)
+{
+    if(EXTI_GetITStatus(EXTI_Line12) != RESET)
+    {
+        NOP();
+        EXTI_ClearITPendingBit(EXTI_Line12);
+    }
+
+    if(EXTI_GetITStatus(EXTI_Line10) != RESET)
+    {
+        NOP();
+        EXTI_ClearITPendingBit(EXTI_Line10);
+    }
+
+    if(EXTI_GetITStatus(EXTI_Line11) != RESET)
+    {
+        NOP();
+        EXTI_ClearITPendingBit(EXTI_Line11);
+    }
+
+    if(EXTI_GetITStatus(EXTI_Line13) != RESET)
+    {
+        NOP();
+        EXTI_ClearITPendingBit(EXTI_Line13);
+    }
+}
+/**
+ * @description: 
+ * @param {*}
+ * @return {*}
+ */
+void EXTI0_1_IRQHandler(void)
+{
+    if(EXTI_GetITStatus(EXTI_Line0) != RESET)
+    {
+        NOP();
+        EXTI_ClearITPendingBit(EXTI_Line0);
+    }
 }
 
 /**
@@ -369,9 +470,6 @@ async IO_Test(thread_t* pt)
             LED1_IO(n);
             LED2_IO(n);
 
-            // BLED_B_IO(n);
-            // RLED_B_IO(n);
-            // GLED_B_IO(n);
             SCL_IO(n);
             SDA_IO(n);
             IO_TX(n);

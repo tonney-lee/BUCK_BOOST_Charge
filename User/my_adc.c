@@ -1,5 +1,5 @@
 #include "my_adc.h"
-#include "my_uart.h"
+#include "my_io_port.h"
 
 #define ADC1_DR_Address 0x40012440
 __IO uint16_t RegularConvData_Tab[7];
@@ -10,6 +10,7 @@ __IO uint16_t RegularConvData_Tab[7];
   */
 static void DMA_Config(void)
 {
+    NVIC_InitTypeDef NVIC_InitStructure;
     DMA_InitTypeDef DMA_InitStructure;
     /* DMA1 clock enable */
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
@@ -27,6 +28,15 @@ static void DMA_Config(void)
     DMA_InitStructure.DMA_Priority = DMA_Priority_High;
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
     DMA_Init(DMA1_Channel1, &DMA_InitStructure);
+    //
+    /* Enable DMA1 Channel1 Transfer Complete interrupt */
+    DMA_ITConfig(DMA1_Channel1, DMA_IT_TC, ENABLE);
+    /* Enable DMA1 channel1 IRQ Channel */
+    NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+    //
     /* DMA1 Channel1 enable */
     DMA_Cmd(DMA1_Channel1, ENABLE);
 }
@@ -91,6 +101,25 @@ void ADCInit(void)
  * @return {*}
  */
 
+/**
+  * @brief  This function handles DMA1 Channel 1 interrupt request.
+  * @param  None
+  * @retval None
+  */
+void DMA1_Channel1_IRQHandler(void)
+{
+    /* Test on DMA1 Channel1 Transfer Complete interrupt */
+    if(DMA_GetITStatus(DMA1_IT_TC1))
+    {
+        /* DMA1 finished the transfer of SrcBuffer */
+        /* Clear DMA1 Channel1 Half Transfer, Transfer Complete and Global interrupt pending bits */
+        DMA_ClearITPendingBit(DMA1_IT_GL1);
+        static SIZE_T n = 0;
+        n ^= 0x01;
+        BI_C_IO(n);
+    }
+}
+
 async ADC_Update(thread_t* pt)
 {
     Thread_BEGIN;
@@ -98,9 +127,9 @@ async ADC_Update(thread_t* pt)
         while(1)
         {
             /* Test DMA1 TC flag */
-            Thread_Wait_Until((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
+            //Thread_Wait_Until((DMA_GetFlagStatus(DMA1_FLAG_TC1)) == RESET);
             /* Clear DMA TC flag */
-            DMA_ClearFlag(DMA1_FLAG_TC1);
+            //DMA_ClearFlag(DMA1_FLAG_TC1);
             Thread_Yield();
         }
     }

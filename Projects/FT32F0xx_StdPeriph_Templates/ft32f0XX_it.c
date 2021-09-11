@@ -117,17 +117,17 @@ void RTC_IRQHandler(void)
   * @param  None
   * @retval None
   */
-void EXTI4_15_IRQHandler(void)
-{
-  if(EXTI_GetITStatus(TAMPER_BUTTON_EXTI_LINE) != RESET)
-  { 
-    /* Clear the TAMPER Button EXTI line pending bit */
-    EXTI_ClearITPendingBit(TAMPER_BUTTON_EXTI_LINE);
+// void EXTI4_15_IRQHandler(void)
+// {
+//   if(EXTI_GetITStatus(TAMPER_BUTTON_EXTI_LINE) != RESET)
+//   { 
+//     /* Clear the TAMPER Button EXTI line pending bit */
+//     EXTI_ClearITPendingBit(TAMPER_BUTTON_EXTI_LINE);
 
-    /* LED2 on */
-    FT_EVAL_LEDOn(LED2);
-  }
-}
+//     /* LED2 on */
+//     FT_EVAL_LEDOn(LED2);
+//   }
+// }
 
 /**
   * @brief  This function handles PPP interrupt request.

@@ -34,5 +34,10 @@ typedef struct
 } sys_t;
 /*---------------------------------------------------------------------------*/
 extern sys_t sys;
+
+void UartInit(void);
+void UartSend(u8* txBuf, SIZE_T tx_num);
+async uart1_Rcv_Update(thread_t* pt);
+async uart_send_test(thread_t* pt);
 /*---------------------------------------------------------------------------*/
 #endif

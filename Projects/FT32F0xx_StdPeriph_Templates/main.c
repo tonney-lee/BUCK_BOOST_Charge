@@ -20,7 +20,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "thread.h"
 #include "usr.h"
 /** @addtogroup FT32f0xx_StdPeriph_Examples
   * @{
@@ -37,6 +36,17 @@
 
 /* Private function prototypes -----------------------------------------------*/
 
+static void SysTickConfig(void)
+{
+    /* SysTick interrupt each 1 ms */
+    if(SysTick_Config(SystemCoreClock / 1000))
+    {
+        /* Capture error */
+        while(1)
+            ;
+    }
+    NVIC_SetPriority(SysTick_IRQn, 0x03);
+}
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -52,15 +62,7 @@ int main(void)
        To reconfigure the default setting of SystemInit() function, refer to
        system_FT32f0xx.c file
      */
-
-    /* SysTick interrupt each 10 ms */
-    if(SysTick_Config(SystemCoreClock / 1000))
-    {
-        /* Capture error */
-        while(1)
-            ;
-    }
-    NVIC_SetPriority(SysTick_IRQn, 0x0);
+    SysTickConfig();
     Thread_Start(user, &threadInfo.status);
     TaskRun();
     while(1)

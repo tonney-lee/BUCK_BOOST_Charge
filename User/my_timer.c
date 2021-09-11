@@ -65,6 +65,11 @@ static void TIM1_Config(void)
     // TIM_SetCompare2(TIM1, 1000); //V
     // TIM_SetCompare3(TIM1, 1500); //W
     // TIM_SetCompare4(TIM1, 2000);
+    //
+    TIM_SetCompare1(TIM1, 0); //U
+    TIM_SetCompare2(TIM1, 0); //V
+    TIM_SetCompare3(TIM1, 0); //W
+    TIM_SetCompare4(TIM1, 0);
 }
 /**
  * @description: 

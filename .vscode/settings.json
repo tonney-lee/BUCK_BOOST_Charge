@@ -4,6 +4,7 @@
         "my_io_port.h": "c",
         "main.h": "c",
         "thread.h": "c",
-        "usr.h": "c"
+        "usr.h": "c",
+        "my_key.h": "c"
     }
 }
