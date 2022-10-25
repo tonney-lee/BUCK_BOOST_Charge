@@ -42,8 +42,7 @@ static void SysTickConfig(void)
     if(SysTick_Config(SystemCoreClock / 1000))
     {
         /* Capture error */
-        while(1)
-            ;
+        while(1) ;
     }
     NVIC_SetPriority(SysTick_IRQn, 0x03);
 }
