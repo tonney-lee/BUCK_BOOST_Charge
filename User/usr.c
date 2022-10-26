@@ -17,11 +17,10 @@ async user(thread_t *pt)
         Time15Initial(); // FIR
         ADCInit();
         UartInit();
-        //
-        Thread_Start(ADC_Update, &threadInfo.status);
-        Thread_Start(key_Update, &threadInfo.status);
-        Thread_Start(uart1_Rcv_Update, &threadInfo.status);
-        Thread_Start(uart_send_test, &threadInfo.status);
+        // Thread_Start(ADC_Update, &threadInfo.status);
+        // Thread_Start(key_Update, &threadInfo.status);
+        // Thread_Start(uart1_Rcv_Update, &threadInfo.status);
+        // Thread_Start(uart_send_test, &threadInfo.status);
         // Thread_Start(IO_Test, &threadInfo.status);
 
         while (1)

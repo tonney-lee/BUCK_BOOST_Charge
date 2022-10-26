@@ -24,7 +24,7 @@ SIZE_T S1_PIN(void)
 }
 SIZE_T S2_PIN(void)
 {
-    return MFB_IO();
+    //return MFB_IO();
 }
 SIZE_T DC_IN_PIN(void)
 {
