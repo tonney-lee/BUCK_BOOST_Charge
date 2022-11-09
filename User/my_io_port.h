@@ -20,11 +20,11 @@
 #define CHARGE_CURRENT_Port GPIOA
 #define CHARGE_CURRENT_Pin GPIO_Pin_4
 // PA8   PWM_Buck
-#define PWM_BUCK_Port GPIOA
-#define PWM_BUCK_Pin GPIO_Pin_8
+#define PWM_BUCK_H_Port GPIOA
+#define PWM_BUCK_H_Pin GPIO_Pin_8
 // PA9  PWM_Boost
-#define PWM_BOOST_Port GPIOA
-#define PWM_BOOST_Pin GPIO_Pin_9
+#define PWM_BOOST_H_Port GPIOA
+#define PWM_BOOST_H_Pin GPIO_Pin_9
 // PA10 VBAT_M_ON/OFF
 #define BAT_VOLTAGE_MEASURE_ON_OFF_Port GPIOA
 #define BAT_VOLTAGE_MEASURE_ON_OFF_Pin GPIO_Pin_10
@@ -96,17 +96,17 @@
 // PB11
 // PB12
 // PB13
-#define UL_Port GPIOB
-#define UL_Pin GPIO_Pin_13
-#define UL_PIN_H() GPIO_SetBits(UL_Port, UL_Pin)
-#define UL_PIN_L() GPIO_ResetBits(UL_Port, UL_Pin)
-#define UL_IO(n) (n ? (UL_PIN_H()) : (UL_PIN_L()))
+#define PWM_BUCK_L_Port GPIOB
+#define PWM_BUCK_L_Pin GPIO_Pin_13
+#define PWM_BUCK_L_PIN_H() GPIO_SetBits(PWM_BUCK_L_Port, PWM_BUCK_L_Pin)
+#define PWM_BUCK_L_PIN_L() GPIO_ResetBits(PWM_BUCK_L_Port, PWM_BUCK_L_Pin)
+#define PWM_BUCK_L_IO(n) (n ? (PWM_BUCK_L_PIN_H()) : (PWM_BUCK_L_PIN_L()))
 // PB14
-#define VL_Port GPIOB
-#define VL_Pin GPIO_Pin_14
-#define VL_PIN_H() GPIO_SetBits(VL_Port, VL_Pin)
-#define VL_PIN_L() GPIO_ResetBits(UL_Port, VL_Pin)
-#define VL_IO(n) (n ? (VL_PIN_H()) : (VL_PIN_L()))
+#define PWM_BOOST_L_Port GPIOB
+#define PWM_BOOST_L_Pin GPIO_Pin_14
+#define PWM_BOOST_L_PIN_H() GPIO_SetBits(PWM_BOOST_L_Port, PWM_BOOST_L_Pin)
+#define PWM_BOOST_L_PIN_L() GPIO_ResetBits(PWM_BOOST_L_Port, PWM_BOOST_L_Pin)
+#define PWM_BOOST_L_IO(n) (n ? (PWM_BOOST_L_PIN_H()) : (PWM_BOOST_L_PIN_L()))
 // PB15
 #define WL_Port GPIOB
 #define WL_Pin GPIO_Pin_15

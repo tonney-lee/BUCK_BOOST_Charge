@@ -3,43 +3,42 @@
 #include "my_io_port.h"
 #include "my_key.h"
 #include "my_uart.h"
+#include "thread.h"
 
 /**
  * @brief  ADC and TIM configuration
  * @param  None
  * @retval None
  */
-//#define MCU_CLOCK (48)     // (MHz) Ö÷Æµ
-#define PWM_FREQUENCY (16) // (kHz) ÔØ²¨ÆµÂÊ
-#define Pole_Pairs (5)     // ¼«¶ÔÊý
+//#define MCU_CLOCK (48)     // (MHz) ï¿½ï¿½Æµ
+#define PWM_FREQUENCY (250) // (kHz) ï¿½Ø²ï¿½Æµï¿½ï¿½
+#define Pole_Pairs (5)      // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-/*TIM1µÄ²ÎÊýÉèÖÃ*/
-#define TIM1_Prescaler 0                              //Ô¤·ÖÆµÎª0
-//#define TIM1_Period ((SystemCoreClock / 200000) - 1); //ÉèÖÃ³õÊ¼ÆµÂÊ17.57 KHz:
-#define TIM1_InitDuty (100)       
+/*TIM1ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+#define TIM1_Prescaler 0 //Ô¤ï¿½ï¿½ÆµÎª0
+#define TIM1_InitDuty (100)
 
 #define MCU_CLOCK (48000000U)
-#define TIM1_PWM_FREQUENCY (150000U)
+#define TIM1_PWM_FREQUENCY (250000U)
 #define TIM1_PWM_CLOCK_TICKS (int)(MCU_CLOCK / TIM1_PWM_FREQUENCY)
 #define TIM1_PWM_MAX_PULSE (TIM1_PWM_CLOCK_TICKS)
-#define TIM1_PWM_PERIOD (TIM1_PWM_MAX_PULSE - 1)                    //³õÊ¼Õ¼¿Õ±È
+#define TIM1_PWM_PERIOD (TIM1_PWM_MAX_PULSE - 1) //ï¿½ï¿½Ê¼Õ¼ï¿½Õ±ï¿½
 
 #define TIM2_PWM_FREQUENCY (2500U)
 #define TIM2_PWM_CLOCK_TICKS (int)(MCU_CLOCK / TIM2_PWM_FREQUENCY)
-#define TIM2_PWM_MAX_PULSE (TIM2_PWM_CLOCK_TICKS / 4)
+#define TIM2_PWM_MAX_PULSE (TIM2_PWM_CLOCK_TICKS / 2)
 #define TIM2_PWM_PERIOD (TIM2_PWM_MAX_PULSE - 1)
 
 #define TIM3_PWM_FREQUENCY (10000U)
 #define TIM3_PWM_CLOCK_TICKS (int)(MCU_CLOCK / TIM3_PWM_FREQUENCY)
-#define TIM3_PWM_MAX_PULSE (TIM3_PWM_CLOCK_TICKS / 4)
+#define TIM3_PWM_MAX_PULSE (TIM3_PWM_CLOCK_TICKS / 2)
 #define TIM3_PWM_PERIOD (TIM3_PWM_MAX_PULSE - 1)
-
-
 
 static void TIM1_Config(void)
 {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
     TIM_OCInitTypeDef TIM_OCInitStructure;
+    TIM_BDTRInitTypeDef TIM_BDTRInitStructure;
 
     /* ADC1 and TIM1 Periph clock enable */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
@@ -59,10 +58,10 @@ static void TIM1_Config(void)
     /* Output Compare PWM Mode configuration */
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1; /* low edge by default */
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputState_Disable;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;  // CHxÊä³ö¼«ÐÔ:TIMÊä³ö±È½Ï¼«ÐÔ¸ß(PWMÊä³öµÄµçÆ½¼«ÐÔ)
-    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set; // CHxÊä³ö¿ÕÏÐ×´Ì¬:0
-    TIM_OCInitStructure.TIM_Pulse = TIM1_InitDuty;             //³õÊ¼Âö³å
+    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;  // CHxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?:TIMï¿½ï¿½ï¿½ï¿½È½Ï¼ï¿½ï¿½Ô¸ï¿?(PWMï¿½ï¿½ï¿½ï¿½Äµï¿½Æ½ï¿½ï¿½ï¿½ï¿?)
+    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set; // CHxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì?:0
+    TIM_OCInitStructure.TIM_Pulse = TIM1_InitDuty;             //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
 
     TIM_OC1Init(TIM1, &TIM_OCInitStructure);
     TIM_OC2Init(TIM1, &TIM_OCInitStructure);
@@ -74,15 +73,28 @@ static void TIM1_Config(void)
     TIM_OC3PreloadConfig(TIM1, TIM_OCPreload_Enable);
     TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);
 
+    TIM_BDTRInitStructure.TIM_OSSRState = TIM_OSSRState_Enable;
+    TIM_BDTRInitStructure.TIM_OSSIState = TIM_OSSIState_Enable;
+    TIM_BDTRInitStructure.TIM_LOCKLevel = TIM_LOCKLevel_1;
+    TIM_BDTRInitStructure.TIM_DeadTime = 16;
+    TIM_BDTRInitStructure.TIM_Break = TIM_Break_Enable;
+    TIM_BDTRInitStructure.TIM_BreakPolarity = TIM_BreakPolarity_High;
+    TIM_BDTRInitStructure.TIM_AutomaticOutput = TIM_AutomaticOutput_Enable;
+    //TIM_BDTRStructInit(&TIM_BDTRInitStructure);
+    TIM_BDTRConfig(TIM1, &TIM_BDTRInitStructure);
+
     /* TIM1 enable counter */
     TIM_Cmd(TIM1, ENABLE);
     /* Main Output Enable */
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
 
-    TIM_SetCompare1(TIM1, (int)(TIM1_PWM_PERIOD*0.4));                
-    TIM_SetCompare2(TIM1, (int)TIM1_PWM_PERIOD); 
+    // TIM_SetCompare1(TIM1, (int)(TIM1_PWM_PERIOD*0.5));
+    // TIM_SetCompare2(TIM1, (int)(TIM1_PWM_PERIOD*1));
     // TIM_SetCompare3(TIM1, 100); //W
     // TIM_SetCompare4(TIM1, 100);
+    // Thread_Sleep(1000);
+    TIM_SetCompare1(TIM1, (int)(TIM1_PWM_PERIOD * 1));
+    TIM_SetCompare2(TIM1, (int)(TIM1_PWM_PERIOD * 0.4));
 }
 /**
  * @description:
@@ -111,10 +123,10 @@ static void TIM3_Config(void)
     /* Output Compare PWM Mode configuration */
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1; /* low edge by default */
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputState_Disable;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;  // CHxÊä³ö¼«ÐÔ:TIMÊä³ö±È½Ï¼«ÐÔ¸ß(PWMÊä³öµÄµçÆ½¼«ÐÔ)
-    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set; // CHxÊä³ö¿ÕÏÐ×´Ì¬:0
-    TIM_OCInitStructure.TIM_Pulse = TIM1_InitDuty;             //³õÊ¼Âö³å
+    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;  // CHxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?:TIMï¿½ï¿½ï¿½ï¿½È½Ï¼ï¿½ï¿½Ô¸ï¿?(PWMï¿½ï¿½ï¿½ï¿½Äµï¿½Æ½ï¿½ï¿½ï¿½ï¿?)
+    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set; // CHxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì?:0
+    TIM_OCInitStructure.TIM_Pulse = TIM1_InitDuty;             //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
 
     TIM_OC1Init(TIM3, &TIM_OCInitStructure);
     TIM_OC2Init(TIM3, &TIM_OCInitStructure);
@@ -156,10 +168,10 @@ static void TIM15_Config(void)
     /* Output Compare PWM Mode configuration */
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1; /* low edge by default */
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputState_Disable;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;  // CHxÊä³ö¼«ÐÔ:TIMÊä³ö±È½Ï¼«ÐÔ¸ß(PWMÊä³öµÄµçÆ½¼«ÐÔ)
-    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set; // CHxÊä³ö¿ÕÏÐ×´Ì¬:0
-    TIM_OCInitStructure.TIM_Pulse = TIM1_InitDuty;             //³õÊ¼Âö³å
+    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;  // CHxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?:TIMï¿½ï¿½ï¿½ï¿½È½Ï¼ï¿½ï¿½Ô¸ï¿?(PWMï¿½ï¿½ï¿½ï¿½Äµï¿½Æ½ï¿½ï¿½ï¿½ï¿?)
+    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set; // CHxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì?:0
+    TIM_OCInitStructure.TIM_Pulse = TIM1_InitDuty;             //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
 
     TIM_OC1Init(TIM15, &TIM_OCInitStructure);
     TIM_OC1PreloadConfig(TIM15, TIM_OCPreload_Enable);

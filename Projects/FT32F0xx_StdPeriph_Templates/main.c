@@ -65,6 +65,10 @@ int main(void)
   SysTickConfig();
   Thread_Start(user, &threadInfo.status);
   TaskRun();
+  // Thread_Sleep(100);
+  // TIM_SetCompare1(TIM1, (int)(TIM1_PWM_PERIOD * 0.5));
+  // TIM_SetCompare2(TIM1, (int)(TIM1_PWM_PERIOD * 1));
+
   while (1)
   {
   }

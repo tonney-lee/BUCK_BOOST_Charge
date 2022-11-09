@@ -13,16 +13,16 @@
       <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
-          <Device>FT32F030C8ATx</Device>
+          <Device>FT32F072C8ATx</Device>
           <Vendor>FMD</Vendor>
-          <PackID>FMD.FT32F0xx_DFP.1.0.1</PackID>
+          <PackID>FMD.FT32F0xx_DFP.1.0.5</PackID>
           <PackURL>https://www.fremontmicro.com/upload/tools/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00002000) IROM(0x08000000,0x00010000) CPUTYPE("Cortex-M0") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0FT32F0xx_64 -FS08000000 -FL010000 -FP0($$Device:FT32F030C8ATx$CMSIS\Flash\FT32F0xx_64.FLM))</FlashDriverDll>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0FT32F0xx_64 -FS08000000 -FL010000 -FP0($$Device:FT32F072C8ATx$CMSIS\Flash\FT32F0xx_64.FLM))</FlashDriverDll>
           <DeviceId>0</DeviceId>
-          <RegisterFile>$$Device:FT32F030C8ATx$Drivers\CMSIS\FT32F0xx\Include\ft32f0xx.h</RegisterFile>
+          <RegisterFile>$$Device:FT32F072C8ATx$Drivers\CMSIS\FT32F0xx\Include\ft32f0xx.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -32,7 +32,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:FT32F030C8ATx$CMSIS\SVD\FT32F0x0.svd</SFDFile>
+          <SFDFile>$$Device:FT32F072C8ATx$CMSIS\SVD\FT32F0xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>

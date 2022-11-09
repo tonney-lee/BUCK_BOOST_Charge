@@ -61,21 +61,21 @@ static void Init_GPIO(void)
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     // PWM控制口
     // PWM_Buck PA8
-    GPIO_InitStructure.GPIO_Pin = PWM_BUCK_Pin;
+    GPIO_InitStructure.GPIO_Pin = PWM_BUCK_H_Pin;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(PWM_BUCK_Port, &GPIO_InitStructure);
-    GPIO_PinAFConfig(PWM_BUCK_Port, GPIO_PinSource8, GPIO_AF_2); // TIM1_CH1的复用
+    GPIO_Init(PWM_BUCK_H_Port, &GPIO_InitStructure);
+    GPIO_PinAFConfig(PWM_BUCK_H_Port, GPIO_PinSource8, GPIO_AF_2); // TIM1_CH1的复用
     // PWM_Boost PA9
-    GPIO_InitStructure.GPIO_Pin = PWM_BOOST_Pin;
+    GPIO_InitStructure.GPIO_Pin = PWM_BOOST_H_Pin;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(PWM_BOOST_Port, &GPIO_InitStructure);
-    GPIO_PinAFConfig(PWM_BOOST_Port, GPIO_PinSource9, GPIO_AF_2); // TIM1_CH2的复用
+    GPIO_Init(PWM_BOOST_H_Port, &GPIO_InitStructure);
+    GPIO_PinAFConfig(PWM_BOOST_H_Port, GPIO_PinSource9, GPIO_AF_2); // TIM1_CH2的复用
     // VBAT_M_ON/OFF PA10
     GPIO_InitStructure.GPIO_Pin = BAT_VOLTAGE_MEASURE_ON_OFF_Pin;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
@@ -197,21 +197,23 @@ static void Init_GPIO(void)
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-    // PWM_UL PB13
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+    // PWM_BUCK_L PB13
+    GPIO_InitStructure.GPIO_Pin = PWM_BUCK_L_Pin;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_ResetBits(GPIOB, GPIO_Pin_13);
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(PWM_BUCK_L_Port, &GPIO_InitStructure);
+    GPIO_PinAFConfig(PWM_BUCK_L_Port, GPIO_PinSource13, GPIO_AF_2);
 
-    // PWM_VL PB14
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
+    // PWM_BOOST_L PB14
+    GPIO_InitStructure.GPIO_Pin = PWM_BOOST_L_Pin;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_ResetBits(GPIOB, GPIO_Pin_14);
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(PWM_BOOST_L_Port, &GPIO_InitStructure);
+    GPIO_PinAFConfig(PWM_BOOST_L_Port, GPIO_PinSource14, GPIO_AF_2);
 
     // PWM_WL PB15
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;
@@ -432,9 +434,9 @@ async IO_Test(thread_t *pt)
             BV_ON_IO(n);
             // TEC_PWR_IO(n);
 
-            UL_IO(n);
-            VL_IO(n);
-            WL_IO(n);
+            // UL_IO(n);
+            // VL_IO(n);
+            // WL_IO(n);
 
             FI_C_IO(n);
             BI_C_IO(n);
